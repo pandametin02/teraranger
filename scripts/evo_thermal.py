@@ -292,27 +292,27 @@ class EvoThermal(object):
         if ord(temp_ack[2]) == 0:
             return True
         else:
-            rospy.logerr("Command refused by device")
+            rospy.logerr("Command not acknowledged")
             return False
 
     def start_sensor(self):
-        rospy.loginfo("Starting sensor output...")
+        rospy.loginfo("Starting sensor...")
         res = self.send_command("\x00\x52\x02\x01\xDF")
         if res:
-            rospy.loginfo("Sensor output started successfully")
+            rospy.loginfo("Sensor started successfully")
             return True
         else:
-            rospy.logerr("Failed to start sensor output")
+            rospy.logerr("Failed to start sensor")
             return False
 
     def stop_sensor(self):
-        rospy.loginfo("Stopping sensor output...")
+        rospy.loginfo("Stopping sensor...")
         res = self.send_command("\x00\x52\x02\x00\xD8")
         if res:
-            rospy.loginfo("Sensor output stopped successfully")
+            rospy.loginfo("Sensor stopped successfully")
             return True
         else:
-            rospy.logerr("Failed to stop sensor output")
+            rospy.logerr("Failed to stop sensor")
             return False
 
     def run(self):

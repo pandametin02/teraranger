@@ -129,7 +129,7 @@ class Evo64px(object):
         while not got_frame:
             with self.serial_lock:
                 frame = self.port.readline()
-            if len(frame) in (269, 141):
+            if len(frame) == 269:
                 if ord(frame[0]) == 0x11 and self.crc_check(frame):  # Check for range frame header and crc
                     dec_out = []
                     for i in range(1, 65):
@@ -182,37 +182,30 @@ class Evo64px(object):
                 if ord(ack[2]) == 0:
                     return True
                 else:
-                    rospy.logerr("Command refused by device")
+                    print "Command not acknowledged"
                     return False
             else:
-                rospy.logerr("Invalid sensor answer to command")
+                print "Error in ACK checksum"
                 return False
 
     def start_sensor(self):
-        rospy.loginfo("Configuring sensor...")
-        res = self.send_command("\x00\x11\x03\x4B")
-        if res:
-            rospy.loginfo("Distance and ambient mode activated successfully")
-        else:
-            rospy.logerr("Failed to activate distance and ambient mode")
-
-        rospy.loginfo("Starting sensor output...")
+        rospy.loginfo("Starting sensor...")
         res = self.send_command("\x00\x52\x02\x01\xDF")
         if res:
-            rospy.loginfo("Sensor output started successfully")
+            rospy.loginfo("Sensor started successfully")
             return True
         else:
-            rospy.logerr("Failed to start sensor output")
+            rospy.logerr("Failed to start sensor")
             return False
 
     def stop_sensor(self):
-        rospy.loginfo("Stopping sensor output ...")
+        rospy.loginfo("Stopping sensor...")
         res = self.send_command("\x00\x52\x02\x00\xD8")
         if res:
-            rospy.loginfo("Sensor output stopped successfully")
+            rospy.loginfo("Sensor stopped successfully")
             return True
         else:
-            rospy.logerr("Failed to stop sensor output")
+            rospy.logerr("Failed to stop sensor")
             return False
 
     def run(self):
